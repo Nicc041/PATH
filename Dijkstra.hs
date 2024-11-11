@@ -83,11 +83,11 @@ formatDistance (Just d) = show d
 
 main :: IO ()
 main = do
-  graph <- readNodesAndEdges "nodes.txt" "edges.txt"
-  let shortestPaths = dijkstra graph "B"
+  graph <- readNodesAndEdges "nodes2.txt" "edges2.txt"
+  let shortestPaths = dijkstra graph "S"
   putStrLn "Graph structure:"
   print graph
-  putStrLn "\nShortest paths from A:"
+  putStrLn "\nShortest paths from B:"
   mapM_ (\(node, dist) -> 
     putStrLn $ node ++ ": " ++ formatDistance dist) 
     (Map.toList shortestPaths)
