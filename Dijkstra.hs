@@ -1,29 +1,12 @@
-import Data.Char (isSpace)
-import Data.List (foldl', minimumBy)
+module Dijkstra (dijkstra, Graph, Node) where
+
 import qualified Data.Map.Strict as Map
+import Data.List (foldl', minimumBy)
 import Data.Ord (comparing)
-import Data.Maybe (isJust, fromJust, isNothing)
+import Data.Maybe (isJust, fromJust)
 
 type Node = String
-type Edge = (Node, Node, Int)
 type Graph = Map.Map Node [(Node, Int)]
-
-parseNode :: String -> Node
-parseNode = dropWhile isSpace
-
-parseEdge :: String -> Edge
-parseEdge line =
-  let [src, dst, w] = words line
-  in (src, dst, read w)
-
-readNodesAndEdges :: FilePath -> FilePath -> IO Graph
-readNodesAndEdges nodeFile edgeFile = do
-  nodes <- lines <$> readFile nodeFile
-  edges <- map parseEdge . lines <$> readFile edgeFile
-  return $ foldl' addEdge (Map.fromList [(n, []) | n <- nodes]) edges
-  where
-    addEdge :: Graph -> Edge -> Graph
-    addEdge g (s, d, w) = Map.update (Just . ((d, w) :)) s g
 
 dijkstra :: Graph -> Node -> Map.Map Node (Maybe Int)
 dijkstra graph start =
@@ -68,18 +51,3 @@ dijkstra graph start =
     -- Initial unvisited nodes list
     initialUnvisited = Map.keys graph
   in go initSP initialUnvisited
-
-formatDistance :: Maybe Int -> String
-formatDistance Nothing = "no path"
-formatDistance (Just d) = show d
-
-main :: IO ()
-main = do
-  graph <- readNodesAndEdges "nodes2.txt" "edges2.txt"
-  let shortestPaths = dijkstra graph "S"
-  putStrLn "Graph structure:"
-  print graph
-  putStrLn "\nShortest paths from B:"
-  mapM_ (\(node, dist) -> 
-    putStrLn $ node ++ ": " ++ formatDistance dist) 
-    (Map.toList shortestPaths)
