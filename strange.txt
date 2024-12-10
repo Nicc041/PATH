@@ -1,0 +1,11 @@
+START(X,Y,Z)
+noop
+noop
+noop
+acc X
+START(Z)
+acc Y
+acc Z
+acc X
+END(Z=4)
+END(X=5)
