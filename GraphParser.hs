@@ -9,6 +9,7 @@ import Text.Parsec
 import Text.Parsec.String
 import qualified Data.Map.Strict as Map
 import Control.Monad (void)
+import Text.Read (readMaybe)
 
 -- Type aliases
 type Node = String
@@ -30,8 +31,14 @@ edgesParser = endBy1 edgeParser newline
       skipMany1 space
       dst <- many1 (noneOf " \t")
       skipMany1 space
-      weight <- many1 digit
-      return (src, dst, read weight)
+      sign <- optionMaybe (char '-')
+      digits <- many1 digit
+      let weightStr = case sign of
+                        Just _  -> '-' : digits
+                        Nothing -> digits
+      case readMaybe weightStr :: Maybe Int of
+        Just weight -> return (src, dst, weight)
+        Nothing     -> fail "Invalid weight format"
 
 -- Read nodes and edges using Parsec
 readNodesAndEdges :: FilePath -> FilePath -> IO Graph

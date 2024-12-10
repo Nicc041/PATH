@@ -8,6 +8,10 @@ formatDistance :: Maybe Int -> String
 formatDistance Nothing = "no path"
 formatDistance (Just d) = show d
 
+-- Check for negative weights in the graph
+hasNegativeEdges :: Graph -> Bool
+hasNegativeEdges graph = any (\(_, weight) -> weight < 0) (concat (Map.elems graph))
+
 main :: IO ()
 main = do
   -- Ask user for input files
@@ -41,12 +45,15 @@ main = do
       
       case choice of
         "1" -> do
-          putStrLn "\nRunning Dijkstra's Algorithm..."
-          let shortestPaths = dijkstra graph startNode
-          putStrLn "Shortest paths:"
-          mapM_ (\(node, dist) -> 
-            putStrLn $ node ++ ": " ++ formatDistance dist) 
-            (Map.toList shortestPaths)
+          if hasNegativeEdges graph
+            then putStrLn "Error: Dijkstra's algorithm cannot be used with negative edge weights."
+            else do
+              putStrLn "\nRunning Dijkstra's Algorithm..."
+              let shortestPaths = dijkstra graph startNode
+              putStrLn "Shortest paths:"
+              mapM_ (\(node, dist) -> 
+                putStrLn $ node ++ ": " ++ formatDistance dist) 
+                (Map.toList shortestPaths)
         
         "2" -> do
           putStrLn "\nRunning Bellman-Ford Algorithm..."

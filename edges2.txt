@@ -22,3 +22,10 @@ O P 8
 P Q 2
 Q R 7
 R S 5
+R C 4
+H A 3
+I B 6
+M F 2
+P G 5
+Q D 7
+S E 4

@@ -1,0 +1,6 @@
+Shortest paths:
+A: no path
+B: 0
+C: no path
+D: 2
+E: 3
